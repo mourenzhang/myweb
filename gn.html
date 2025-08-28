@@ -11,6 +11,69 @@
             background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
             font-family: 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Arial', sans-serif;
             overflow-x: hidden;
+            transition: background 0.5s;
+        }
+        body.dark-mode {
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            color: #f2f2f2;
+        }
+        .dark-mode .jojo-panel,
+        .dark-mode .navbar,
+        .dark-mode .navbar-container,
+        .dark-mode .content,
+        .dark-mode #main-content,
+        .dark-mode #wx-setting-panel,
+        .dark-mode #wx-setting-btn,
+        .dark-mode #wx-popup,
+        .dark-mode #wx-popup-mask,
+        .dark-mode .login-panel {
+            background: rgba(34,34,34,0.92) !important;
+            color: #f2f2f2 !important;
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.28) !important;
+        }
+        .dark-mode input,
+        .dark-mode textarea {
+            background: #222 !important;
+            color: #f2f2f2 !important;
+            border-color: #444 !important;
+        }
+        .dark-mode .nav-btn {
+            background: rgba(44,44,44,0.7) !important;
+            color: #f2f2f2 !important;
+        }
+        .dark-mode .nav-btn.active,
+        .dark-mode .nav-btn:hover {
+            background: linear-gradient(90deg, #232526 0%, #414345 100%) !important;
+            color: #fff !important;
+        }
+        .dark-mode #wx-setting-btn {
+            background: rgba(44,44,44,0.85) !important;
+            color: #f2f2f2 !important;
+        }
+        .dark-mode #wx-setting-panel {
+            background: rgba(34,34,34,0.95) !important;
+        }
+        .dark-mode #wx-nickname,
+        .dark-mode #wx-signature,
+        .dark-mode #wx-fake1,
+        .dark-mode #wx-fake2,
+        .dark-mode #wx-fake3 {
+            color: #f2f2f2 !important;
+        }
+        .dark-mode #wx-dark-bar {
+            background: #444 !important;
+        }
+        .dark-mode #wx-dark-dot {
+            background: #222 !important;
+        }
+        .dark-mode .login-input {
+            background: #222 !important;
+            color: #f2f2f2 !important;
+            border-color: #444 !important;
+        }
+        .dark-mode .login-btn {
+            background: linear-gradient(90deg, #232526 0%, #414345 100%) !important;
+            color: #fff !important;
         }
         .content {
             min-height: 80vh;
@@ -217,10 +280,36 @@
             </div>
             <canvas width="340" height="340" id="jojo-canvas" class="jojo-panel-canvas" style="margin-top:18px;"></canvas>
         </div>
+        <!-- 微信个人页弹窗 -->
+        <div id="wx-popup-mask" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.18);backdrop-filter:blur(2px);align-items:center;justify-content:center;">
+            <div id="wx-popup" style="background:rgba(255,255,255,0.92);border-radius:20px;box-shadow:0 8px 32px 0 rgba(31,38,135,0.18);padding:32px 28px 24px 28px;min-width:270px;display:flex;flex-direction:column;align-items:center;animation:wxPopIn 0.5s cubic-bezier(.68,-0.55,.27,1.55);position:relative;transition:background 0.4s;">
+                <div style="font-size:1.25rem;font-weight:600;margin-bottom:18px;letter-spacing:1px;transition:color 0.4s;" id="wx-popup-title">设置</div>
+                <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+                    <span style="font-size:1.08rem;transition:color 0.4s;" id="wx-dark-label">深色模式</span>
+                    <label style="display:inline-flex;align-items:center;cursor:pointer;">
+                        <input type="checkbox" id="wx-dark-switch" style="display:none;">
+                        <span style="width:44px;height:24px;display:inline-block;background:#eee;border-radius:12px;position:relative;transition:background 0.3s;" id="wx-dark-bar">
+                            <span style="position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 2px 8px 0 rgba(31,38,135,0.08);transition:left 0.25s cubic-bezier(.68,-0.55,.27,1.55),background 0.3s;" id="wx-dark-dot"></span>
+                        </span>
+                    </label>
+                </div>
+                <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+                    <span style="font-size:1.08rem;transition:color 0.4s;" id="wx-bg-label">风景背景</span>
+                    <button id="wx-bg-btn" style="background:linear-gradient(90deg,#a8edea 0%,#fed6e3 100%);border:none;border-radius:12px;padding:6px 18px;font-size:1rem;font-weight:500;color:#222;cursor:pointer;box-shadow:0 2px 8px 0 rgba(31,38,135,0.08);transition:background 0.3s;">切换</button>
+                </div>
+                <button onclick="closeWxPopup()" style="margin-top:10px;background:#eee;border:none;border-radius:10px;padding:6px 28px;font-size:1rem;color:#555;cursor:pointer;transition:background 0.2s;">关闭</button>
+            </div>
+        </div>
+        <style>
+            @keyframes wxPopIn {
+                0% { transform:scale(0.8) translateY(40px); opacity:0;}
+                100% { transform:none; opacity:1;}
+            }
+        </style>
     </div>
     <div class="navbar-container">
         <div class="navbar">
-            <button class="nav-btn active" onclick="switchPage(0)">主页</button>
+            <button class="nav-btn" onclick="switchPage(0)">主页</button>
             <button class="nav-btn" onclick="switchPage(1)">发现</button>
             <button class="nav-btn" onclick="switchPage(2)">工具</button>
             <button class="nav-btn" onclick="switchPage(3)">我的</button>
@@ -244,8 +333,7 @@
         // 增加无穷级别
         const grades = ["E","D","C","B","A","S","∞"];
         function valueToGrade(val) {
-            if (val >= 6) return "∞";
-            return grades[Math.round(val)] || "E";
+            return grades[Math.max(0, Math.min(6, Math.round(val)))] || "E";
         }
         // 生成属性行
         function renderJojoAttrs() {
@@ -267,7 +355,7 @@
                 const range = document.createElement('input');
                 range.type = "range";
                 range.className = "jojo-attr-range";
-                range.min = 0; range.max = 7; range.step = 1; // max改为7
+                range.min = 0; range.max = 6; range.step = 1;
                 range.value = attr.value;
                 range.oninput = e => {
                     jojoData.attrs[i].value = parseInt(range.value);
@@ -290,12 +378,12 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0,0,canvas.width,canvas.height);
             // 背景
-            ctx.save();
-            ctx.globalAlpha = 0.85;
-            ctx.fillStyle = "#fff";
-            ctx.roundRect(0,0,canvas.width,canvas.height,18);
-            ctx.fill();
-            ctx.restore();
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = "#fff";
+        ctx.roundRect(0,0,canvas.width,canvas.height,18);
+        ctx.fill();
+        ctx.restore();
             // 标题
             ctx.font = "bold 22px 'Segoe UI',sans-serif";
             ctx.fillStyle = "#a86";
@@ -336,7 +424,7 @@
             const r = 80;
             ctx.save();
             ctx.translate(cx,cy);
-            ctx.strokeStyle = "#a8edea";
+            ctx.strokeStyle = "#3498db";
             ctx.lineWidth = 2;
             // 六边形网格
             for(let k=5;k>=1;k--) {
@@ -349,8 +437,8 @@
                     else ctx.lineTo(x,y);
                 }
                 ctx.closePath();
-                ctx.globalAlpha = 0.12;
-                ctx.fillStyle = "#a8edea";
+                ctx.globalAlpha = 0.13;
+                ctx.fillStyle = "#3498db";
                 ctx.fill();
                 ctx.globalAlpha = 1;
                 ctx.stroke();
@@ -365,11 +453,11 @@
                 else ctx.lineTo(x,y);
             }
             ctx.closePath();
-            ctx.globalAlpha = 0.25;
-            ctx.fillStyle = "#fed6e3";
+            ctx.globalAlpha = 0.32;
+            ctx.fillStyle = "#3498db";
             ctx.fill();
             ctx.globalAlpha = 1;
-            ctx.strokeStyle = "#fed6e3";
+            ctx.strokeStyle = "#3498db";
             ctx.lineWidth = 3;
             ctx.stroke();
             ctx.restore();
@@ -427,12 +515,114 @@
                 autoResizeTextarea();
             };
         }
+        // 微信个人页渲染函数
+        function renderWxProfile() {
+            return `
+            <div style="width:100%;max-width:380px;margin:0 auto;">
+                <div style="background:rgba(255,255,255,0.7);border-radius:18px 18px 0 0;padding:32px 0 18px 0;box-shadow:0 2px 12px 0 rgba(31,38,135,0.08);display:flex;flex-direction:column;align-items:center;position:relative;">
+                    <img src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/waifu.png" alt="头像" style="width:80px;height:80px;border-radius:18px;box-shadow:0 2px 8px 0 rgba(31,38,135,0.10);margin-bottom:12px;">
+                    <div style="font-size:1.25rem;font-weight:600;letter-spacing:1px;margin-bottom:4px;transition:color 0.4s;" id="wx-nickname">盖</div>
+                    <div style="font-size:1.02rem;color:#888;margin-bottom:8px;transition:color 0.4s;" id="wx-signature">这个人很懒，什么都没有写。</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.5);border-radius:0 0 18px 18px;padding:22px 0 28px 0;box-shadow:0 2px 12px 0 rgba(31,38,135,0.05);display:flex;justify-content:space-around;">
+                    <div style="text-align:center;">
+                        <div style="font-size:1.12rem;font-weight:600;transition:color 0.4s;" id="wx-fake1">朋友圈</div>
+                        <div style="font-size:0.98rem;color:#888;transition:color 0.4s;">99+</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-size:1.12rem;font-weight:600;transition:color 0.4s;" id="wx-fake2">收藏</div>
+                        <div style="font-size:0.98rem;color:#888;transition:color 0.4s;">12</div>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="font-size:1.12rem;font-weight:600;transition:color 0.4s;" id="wx-fake3">相册</div>
+                        <div style="font-size:0.98rem;color:#888;transition:color 0.4s;">8</div>
+                    </div>
+                </div>
+                <div style="width:100%;display:flex;justify-content:center;margin:24px 0 0 0;">
+                    <button id="wx-setting-btn" style="background:rgba(255,255,255,0.85);border:none;border-radius:14px;width:80%;max-width:220px;height:44px;box-shadow:0 2px 8px 0 rgba(31,38,135,0.10);cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:10px;font-size:1.08rem;font-weight:500;color:#555;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9Z" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        设置
+                    </button>
+                </div>
+                <div id="wx-setting-panel-wrap" style="width:100%;display:flex;justify-content:center;">
+                    <div id="wx-setting-panel" style="overflow:hidden;max-height:0;transition:max-height 0.5s cubic-bezier(.68,-0.55,.27,1.55),padding 0.5s;background:rgba(255,255,255,0.95);border-radius:14px;margin-top:0;width:80%;max-width:220px;box-shadow:0 4px 16px 0 rgba(31,38,135,0.10);padding:0 0;">
+                        <div style="padding:18px 18px 0 18px;">
+                            <div style="font-size:1.08rem;color:#333;margin-bottom:18px;text-align:center;">
+                                这里是个人设置中心，可在此自定义主题。
+                            </div>
+                            <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                                <span style="font-size:1.08rem;transition:color 0.4s;" id="wx-dark-label">深色模式</span>
+                                <label style="display:inline-flex;align-items:center;cursor:pointer;">
+                                    <input type="checkbox" id="wx-dark-switch" style="display:none;">
+                                    <span style="width:44px;height:24px;display:inline-block;background:#eee;border-radius:12px;position:relative;transition:background 0.3s;" id="wx-dark-bar">
+                                        <span style="position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 2px 8px 0 rgba(31,38,135,0.08);transition:left 0.25s cubic-bezier(.68,-0.55,.27,1.55),background 0.3s;" id="wx-dark-dot"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // 设置面板展开/收起动画
+        function toggleWxSettingPanel() {
+            const panel = document.getElementById('wx-setting-panel');
+            if (!panel) return;
+            if (panel.style.maxHeight === "0px" || panel.style.maxHeight === "0") {
+                panel.style.maxHeight = "180px";
+                panel.style.padding = "0 0 18px 0";
+                setTimeout(() => {
+                    panel.style.overflow = "visible";
+                }, 500);
+            } else {
+                panel.style.maxHeight = "0";
+                panel.style.padding = "0 0";
+                panel.style.overflow = "hidden";
+            }
+        }
+
+        // 深色模式
+        let wxDark = false;
+        function applyWxTheme() {
+            if(wxDark) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function bindWxPopupEvents() {
+            // 深色开关
+            const darkSwitch = document.getElementById('wx-dark-switch');
+            const darkBar = document.getElementById('wx-dark-bar');
+            const darkDot = document.getElementById('wx-dark-dot');
+            darkSwitch.checked = wxDark;
+            function updateDarkSwitch() {
+                if(darkSwitch.checked){
+                    darkBar.style.background = "#444";
+                    darkDot.style.left = "22px";
+                    darkDot.style.background = "#222";
+                    wxDark = true;
+                }else{
+                    darkBar.style.background = "#eee";
+                    darkDot.style.left = "2px";
+                    darkDot.style.background = "#fff";
+                    wxDark = false;
+                }
+                applyWxTheme();
+            }
+            darkSwitch.onchange = updateDarkSwitch;
+            updateDarkSwitch();
+        }
+
         // 页面切换
         const pages = [
-            "欢迎使用本页面，这里是一个多功能演示站点。<br>请通过下方导航栏切换不同功能页面。",
+            "欢迎使用本页面，这里是一个多功能演示站点。<br>请通过下方导航栏切换不同功能页面.",
             document.getElementById('jojo-panel'),
             "这里是工具页面",
-            "这里是我的页面"
+            renderWxProfile
         ];
         function switchPage(idx) {
             const main = document.getElementById('main-content');
@@ -444,6 +634,16 @@
                 renderJojoAttrs();
                 drawJojoPanel();
                 bindJojoEdit();
+            } else if(idx === 3) {
+                main.innerHTML = typeof pages[3] === "function" ? pages[3]() : pages[3];
+                // 绑定设置按钮事件
+                setTimeout(() => {
+                    const btn = document.getElementById('wx-setting-btn');
+                    if(btn) btn.onclick = function() {
+                        toggleWxSettingPanel();
+                        bindWxPopupEvents();
+                    };
+                }, 0);
             } else {
                 main.textContent = pages[idx];
             }
@@ -467,6 +667,10 @@
         }
         // 初始化
         switchPage(0);
+        // 弹窗关闭点击遮罩也可关闭
+        document.getElementById('wx-popup-mask').onclick = function(e){
+            if(e.target === this) closeWxPopup();
+        };
     </script>
 </body>
 </html>
