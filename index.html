@@ -9,17 +9,33 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', 'PingFang SC', 'Hiragino Sans', Arial, sans-serif;
-            background: linear-gradient(120deg, #e0eafc, #cfdef3);
             min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(224,234,252,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 0;
         }
         .container {
             max-width: 480px;
             margin: 40px auto;
-            background: #fff;
+            background: rgba(255,255,255,0.55);
             border-radius: 18px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
             padding: 32px 20px;
             text-align: center;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(16px) saturate(120%);
+            transition: box-shadow 0.5s, background 0.5s, opacity 0.8s;
+            opacity: 0;
         }
         .avatar {
             width: 96px;
@@ -28,6 +44,11 @@
             object-fit: cover;
             margin-bottom: 18px;
             border: 3px solid #a0c4ff;
+            box-shadow: 0 2px 12px rgba(160,196,255,0.25);
+            transition: transform 0.5s;
+        }
+        .avatar:hover {
+            transform: scale(1.08) rotate(-3deg);
         }
         h1 {
             margin: 0 0 10px 0;
@@ -51,11 +72,13 @@
             color: #22223b;
             text-decoration: none;
             font-weight: 500;
-            transition: background 0.2s, color 0.2s;
+            transition: background 0.3s, color 0.3s, transform 0.3s;
+            box-shadow: 0 1px 6px rgba(161,196,253,0.12);
         }
         .links a:hover {
             background: linear-gradient(90deg, #89f7fe 0%, #66a6ff 100%);
             color: #1a237e;
+            transform: translateY(-2px) scale(1.04);
         }
         @media (max-width: 600px) {
             .container {
@@ -66,18 +89,87 @@
                 font-size: 1.4rem;
             }
         }
+        /* 加载进度条样式 */
+        #loader-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.85);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s;
+        }
+        #loader {
+            width: 220px;
+            height: 8px;
+            background: #e0eafc;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(160,196,255,0.18);
+        }
+        #loader-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #a1c4fd 0%, #66a6ff 100%);
+            border-radius: 6px;
+            transition: width 0.3s cubic-bezier(.4,2,.6,1), background 0.3s;
+            animation: loader-bar-anim 1.2s infinite linear alternate;
+        }
+        @keyframes loader-bar-anim {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.25); }
+        }
     </style>
 </head>
 <body>
+    <div id="loader-bg">
+        <div id="loader">
+            <div id="loader-bar"></div>
+        </div>
+    </div>
     <div class="container">
         <img class="avatar" src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" alt="头像">
         <h1>欢迎来到我的主页</h1>
-        <p>这是一个自适应手机和Windows端的美观主页示例。你可以在这里放置你的简介、联系方式或常用链接。</p>
+        <p>这是一个部署在github上的个人网站</p>
         <div class="links">
-            <a href="#">个人简介</a>
-            <a href="#">我的项目</a>
-            <a href="#">联系方式</a>
+            <a href="#">个人网盘</a>
+            <a href="#">哔哩哔哩主页</a>
+            <a href="#">p站主页</a>
         </div>
     </div>
+    <script>
+    // 进度条动画
+    const loaderBar = document.getElementById('loader-bar');
+    const loaderBg = document.getElementById('loader-bg');
+    const container = document.querySelector('.container');
+    let progress = 0;
+    let fakeDuration = 1400 + Math.random() * 600; // 1.4~2s
+    function animateLoader() {
+        let start = null;
+        function step(ts) {
+            if (!start) start = ts;
+            let elapsed = ts - start;
+            let percent = Math.min(100, (elapsed / fakeDuration) * 100);
+            loaderBar.style.width = percent + '%';
+            if (percent < 100) {
+                requestAnimationFrame(step);
+            } else {
+                setTimeout(() => {
+                    loaderBg.style.opacity = 0;
+                    setTimeout(() => {
+                        loaderBg.style.display = 'none';
+                        container.style.opacity = 1;
+                    }, 600);
+                }, 300);
+            }
+        }
+        requestAnimationFrame(step);
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+        container.style.opacity = 0;
+        animateLoader();
+    });
+    </script>
 </body>
 </html>
