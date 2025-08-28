@@ -1,11 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>我的主页</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'PingFang SC', 'Hiragino Sans', Arial, sans-serif;
+            background: linear-gradient(120deg, #e0eafc, #cfdef3);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 480px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 32px 20px;
+            text-align: center;
+        }
+        .avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 18px;
+            border: 3px solid #a0c4ff;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 2rem;
+            color: #22223b;
+        }
+        p {
+            color: #4a4e69;
+            margin-bottom: 24px;
+        }
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .links a {
+            display: block;
+            padding: 12px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
+            color: #22223b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s, color 0.2s;
+        }
+        .links a:hover {
+            background: linear-gradient(90deg, #89f7fe 0%, #66a6ff 100%);
+            color: #1a237e;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 16px 4px;
+                padding: 20px 6px;
+            }
+            h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    
+    <div class="container">
+        <img class="avatar" src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" alt="头像">
+        <h1>欢迎来到我的主页</h1>
+        <p>这是一个自适应手机和Windows端的美观主页示例。你可以在这里放置你的简介、联系方式或常用链接。</p>
+        <div class="links">
+            <a href="#">个人简介</a>
+            <a href="#">我的项目</a>
+            <a href="#">联系方式</a>
+        </div>
+    </div>
 </body>
 </html>
