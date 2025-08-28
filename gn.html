@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航栏界面示例</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            font-family: 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+        .content {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #333;
+            letter-spacing: 2px;
+            /* 为导航栏预留空间 */
+            padding-bottom: 90px;
+            box-sizing: border-box;
+        }
+        /* JoJo面板样式 */
+        .jojo-panel {
+            background: rgba(255,255,255,0.25);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            padding: 32px 40px 24px 40px;
+            min-width: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: cheatIn 0.8s cubic-bezier(.68,-0.55,.27,1.55);
+            position: relative;
+        }
+        .jojo-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            color: #222;
+        }
+        .jojo-desc {
+            font-size: 1.05rem;
+            color: #444;
+            margin-bottom: 18px;
+            text-align: center;
+            width: 100%;
+        }
+        .jojo-attr-table {
+            width: 100%;
+            margin-bottom: 18px;
+        }
+        .jojo-attr-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+        .jojo-attr-label {
+            min-width: 60px;
+            font-size: 1.08rem;
+            color: #333;
+        }
+        .jojo-attr-input {
+            width: 60px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            padding: 2px 6px;
+            font-size: 1rem;
+            margin-right: 8px;
+        }
+        .jojo-attr-range {
+            width: 120px;
+        }
+        .jojo-attr-grade {
+            width: 36px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #a86;
+        }
+        .jojo-btn-row {
+            display: flex;
+            gap: 18px;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+        .jojo-btn {
+            background: linear-gradient(90deg, #a8edea 0%, #fed6e3 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 8px 24px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #222;
+            cursor: pointer;
+            box-shadow: 0 2px 8px 0 rgba(31,38,135,0.08);
+            transition: background 0.2s, transform 0.15s;
+        }
+        .jojo-btn:active {
+            transform: scale(0.97);
+        }
+        .jojo-panel-canvas {
+            background: transparent;
+            margin-top: 10px;
+            border-radius: 18px;
+            box-shadow: 0 2px 8px 0 rgba(31,38,135,0.08);
+        }
+        .jojo-edit-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .jojo-edit-row input, .jojo-edit-row textarea {
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            padding: 4px 8px;
+            font-size: 1rem;
+            width: 100%;
+        }
+        .jojo-edit-row textarea {
+            resize: vertical;
+            min-height: 32px;
+            max-height: 80px;
+        }
+        @media (max-width: 600px) {
+            .content { padding-bottom: 110px; }
+            .jojo-panel { min-width: 0; width: 98vw; padding: 18px 2vw 12px 2vw; }
+        }
+        /* 其它样式同前 */
+        .navbar-container {
+            position: fixed;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            z-index: 100;
+            width: 100vw;
+            pointer-events: none;
+        }
+        .navbar {
+            display: flex;
+            gap: 36px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 -2px 32px 0 rgba(31, 38, 135, 0.13);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            padding: 18px 36px 22px 36px;
+            margin: 0 auto 0 auto;
+            width: fit-content;
+            pointer-events: auto;
+            animation: navbarIn 0.8s cubic-bezier(.68,-0.55,.27,1.55);
+        }
+        @keyframes cheatIn {
+            0% { transform: scale(0.92) translateY(40px); opacity: 0; }
+            100% { transform: none; opacity: 1; }
+        }
+        @keyframes navbarIn {
+            0% { transform: translateY(80px) scale(0.9); opacity: 0; }
+            100% { transform: none; opacity: 1; }
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.45);
+            border: none;
+            outline: none;
+            border-radius: 16px;
+            padding: 10px 28px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            transition: background 0.25s, color 0.25s, transform 0.18s;
+            box-shadow: 0 2px 8px 0 rgba(31,38,135,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-btn.active,
+        .nav-btn:hover {
+            background: linear-gradient(90deg, #a8edea 0%, #fed6e3 100%);
+            color: #222;
+            transform: translateY(-4px) scale(1.06);
+        }
+        @media (max-width: 600px) {
+            .navbar { gap: 12px; padding: 10px 8px 16px 8px; }
+            .nav-btn { padding: 8px 10vw; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="content" id="main-content">
+        欢迎使用本页面，这里是一个多功能演示站点。<br>
+        请通过下方导航栏切换不同功能页面。
+    </div>
+    <div style="display:none;">
+        <!-- jojo面板模板，初始隐藏，切换到发现页时显示 -->
+        <div class="jojo-panel" id="jojo-panel">
+            <div class="jojo-edit-row">
+                <input id="jojo-name" maxlength="12" value="白金之星" />
+            </div>
+            <div class="jojo-edit-row">
+                <textarea id="jojo-desc" maxlength="60" style="margin-bottom:0;overflow:hidden;resize:none;">承太郎的替身，拥有强大的力量与速度。</textarea>
+            </div>
+            <div class="jojo-attr-table" id="jojo-attr-table"></div>
+            <div class="jojo-btn-row">
+                <button class="jojo-btn" id="jojo-save-img">保存为图片</button>
+                <button class="jojo-btn" id="jojo-reset">重置</button>
+            </div>
+            <canvas width="340" height="340" id="jojo-canvas" class="jojo-panel-canvas" style="margin-top:18px;"></canvas>
+        </div>
+    </div>
+    <div class="navbar-container">
+        <div class="navbar">
+            <button class="nav-btn active" onclick="switchPage(0)">主页</button>
+            <button class="nav-btn" onclick="switchPage(1)">发现</button>
+            <button class="nav-btn" onclick="switchPage(2)">工具</button>
+            <button class="nav-btn" onclick="switchPage(3)">我的</button>
+        </div>
+    </div>
+    <script>
+        // JoJo面板数据与交互
+        const jojoDefault = {
+            name: "白金之星",
+            desc: "承太郎的替身，拥有强大的力量与速度。",
+            attrs: [
+                { label: "力量", value: 5, name: "力量" },
+                { label: "速度", value: 5, name: "速度" },
+                { label: "射程", value: 2, name: "射程" },
+                { label: "持续", value: 2, name: "持续" },
+                { label: "精密", value: 3, name: "精密" },
+                { label: "成长", value: 2, name: "成长" }
+            ]
+        };
+        let jojoData = JSON.parse(JSON.stringify(jojoDefault));
+        // 增加无穷级别
+        const grades = ["E","D","C","B","A","S","∞"];
+        function valueToGrade(val) {
+            if (val >= 6) return "∞";
+            return grades[Math.round(val)] || "E";
+        }
+        // 生成属性行
+        function renderJojoAttrs() {
+            const table = document.getElementById('jojo-attr-table');
+            table.innerHTML = "";
+            jojoData.attrs.forEach((attr, i) => {
+                const row = document.createElement('div');
+                row.className = "jojo-attr-row";
+                // 属性名输入
+                const nameInput = document.createElement('input');
+                nameInput.className = "jojo-attr-input";
+                nameInput.value = attr.name;
+                nameInput.maxLength = 4;
+                nameInput.oninput = e => {
+                    jojoData.attrs[i].name = nameInput.value;
+                    drawJojoPanel();
+                };
+                // 滑块
+                const range = document.createElement('input');
+                range.type = "range";
+                range.className = "jojo-attr-range";
+                range.min = 0; range.max = 7; range.step = 1; // max改为7
+                range.value = attr.value;
+                range.oninput = e => {
+                    jojoData.attrs[i].value = parseInt(range.value);
+                    gradeSpan.textContent = valueToGrade(range.value);
+                    drawJojoPanel();
+                };
+                // 等级
+                const gradeSpan = document.createElement('span');
+                gradeSpan.className = "jojo-attr-grade";
+                gradeSpan.textContent = valueToGrade(attr.value);
+                row.appendChild(nameInput);
+                row.appendChild(range);
+                row.appendChild(gradeSpan);
+                table.appendChild(row);
+            });
+        }
+        // 绘制jojo面板到canvas
+        function drawJojoPanel() {
+            const canvas = document.getElementById('jojo-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            // 背景
+            ctx.save();
+            ctx.globalAlpha = 0.85;
+            ctx.fillStyle = "#fff";
+            ctx.roundRect(0,0,canvas.width,canvas.height,18);
+            ctx.fill();
+            ctx.restore();
+            // 标题
+            ctx.font = "bold 22px 'Segoe UI',sans-serif";
+            ctx.fillStyle = "#a86";
+            ctx.textAlign = "center";
+            ctx.fillText(document.getElementById('jojo-name').value, canvas.width/2, 38);
+            // 描述（多行自动换行）
+            ctx.font = "15px 'Segoe UI',sans-serif";
+            ctx.fillStyle = "#555";
+            ctx.textAlign = "center";
+            let desc = document.getElementById('jojo-desc').value;
+            let descLines = [];
+            let maxWidth = canvas.width - 40;
+            let words = desc.split('');
+            let line = '';
+            for(let i=0;i<words.length;i++){
+                let testLine = line + words[i];
+                let metrics = ctx.measureText(testLine);
+                if(metrics.width > maxWidth && line.length > 0){
+                    descLines.push(line);
+                    line = words[i];
+                }else{
+                    line = testLine;
+                }
+            }
+            if(line) descLines.push(line);
+            let descStartY = 62;
+            descLines.forEach((l, idx) => {
+                ctx.fillText(l, canvas.width/2, descStartY + idx*20);
+            });
+            // 默认空3行（60px），每多一行再下移10px
+            const cx = canvas.width/2;
+            const descLinesCount = descLines.length;
+            // 默认介绍2行，空3行，基准y=descStartY+20+20+60+80=262
+            // 2行为基准，实际多出部分每行+10px
+            const baseDescLines = 2;
+            const baseGap = 60; // 3行空隙
+            const cy = descStartY + (baseDescLines-1)*20 + baseGap + (descLinesCount-baseDescLines)*10 + 80;
+            const r = 80;
+            ctx.save();
+            ctx.translate(cx,cy);
+            ctx.strokeStyle = "#a8edea";
+            ctx.lineWidth = 2;
+            // 六边形网格
+            for(let k=5;k>=1;k--) {
+                ctx.beginPath();
+                for(let i=0;i<6;i++) {
+                    let angle = Math.PI/3*i-Math.PI/2;
+                    let rr = r*k/5;
+                    let x = Math.cos(angle)*rr, y = Math.sin(angle)*rr;
+                    if(i===0) ctx.moveTo(x,y);
+                    else ctx.lineTo(x,y);
+                }
+                ctx.closePath();
+                ctx.globalAlpha = 0.12;
+                ctx.fillStyle = "#a8edea";
+                ctx.fill();
+                ctx.globalAlpha = 1;
+                ctx.stroke();
+            }
+            // 属性多边形
+            ctx.beginPath();
+            for(let i=0;i<6;i++) {
+                let angle = Math.PI/3*i-Math.PI/2;
+                let rr = r*jojoData.attrs[i].value/5;
+                let x = Math.cos(angle)*rr, y = Math.sin(angle)*rr;
+                if(i===0) ctx.moveTo(x,y);
+                else ctx.lineTo(x,y);
+            }
+            ctx.closePath();
+            ctx.globalAlpha = 0.25;
+            ctx.fillStyle = "#fed6e3";
+            ctx.fill();
+            ctx.globalAlpha = 1;
+            ctx.strokeStyle = "#fed6e3";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.restore();
+            // 属性名与等级
+            for(let i=0;i<6;i++) {
+                let angle = Math.PI/3*i-Math.PI/2;
+                let tx = cx + Math.cos(angle)*(r+22);
+                let ty = cy + Math.sin(angle)*(r+22);
+                ctx.font = "bold 15px 'Segoe UI',sans-serif";
+                ctx.fillStyle = "#a86";
+                ctx.textAlign = "center";
+                ctx.fillText(jojoData.attrs[i].name, tx, ty-2);
+                ctx.font = "bold 15px 'Segoe UI',sans-serif";
+                ctx.fillStyle = "#e67";
+                ctx.fillText(valueToGrade(jojoData.attrs[i].value), tx, ty+16);
+            }
+        }
+        // 保存为图片
+        function saveJojoPanelImg() {
+            drawJojoPanel();
+            const canvas = document.getElementById('jojo-canvas');
+            const url = canvas.toDataURL("image/png");
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = (document.getElementById('jojo-name').value || "jojo") + ".png";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        // 重置
+        function resetJojoPanel() {
+            jojoData = JSON.parse(JSON.stringify(jojoDefault));
+            document.getElementById('jojo-name').value = jojoData.name;
+            document.getElementById('jojo-desc').value = jojoData.desc;
+            renderJojoAttrs();
+            drawJojoPanel();
+        }
+        // 简介输入框高度自适应
+        function autoResizeTextarea() {
+            const ta = document.getElementById('jojo-desc');
+            ta.style.height = 'auto';
+            ta.style.height = (ta.scrollHeight) + 'px';
+        }
+        // 修改bindJojoEdit
+        function bindJojoEdit() {
+            document.getElementById('jojo-name').oninput = drawJojoPanel;
+            document.getElementById('jojo-desc').oninput = function() {
+                autoResizeTextarea();
+                drawJojoPanel();
+            };
+            autoResizeTextarea();
+            document.getElementById('jojo-save-img').onclick = saveJojoPanelImg;
+            document.getElementById('jojo-reset').onclick = function() {
+                resetJojoPanel();
+                autoResizeTextarea();
+            };
+        }
+        // 页面切换
+        const pages = [
+            "欢迎使用本页面，这里是一个多功能演示站点。<br>请通过下方导航栏切换不同功能页面。",
+            document.getElementById('jojo-panel'),
+            "这里是工具页面",
+            "这里是我的页面"
+        ];
+        function switchPage(idx) {
+            const main = document.getElementById('main-content');
+            main.innerHTML = '';
+            if(idx === 0) {
+                main.innerHTML = pages[0];
+            } else if(idx === 1) {
+                main.appendChild(pages[1]);
+                renderJojoAttrs();
+                drawJojoPanel();
+                bindJojoEdit();
+            } else {
+                main.textContent = pages[idx];
+            }
+            document.querySelectorAll('.nav-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', index === idx);
+            });
+        }
+        // 兼容canvas圆角
+        if(!CanvasRenderingContext2D.prototype.roundRect){
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r){
+                this.beginPath();
+                this.moveTo(x+r, y);
+                this.arcTo(x+w, y, x+w, y+h, r);
+                this.arcTo(x+w, y+h, x, y+h, r);
+                this.arcTo(x, y+h, x, y, r);
+                this.arcTo(x, y, x+w, y, r);
+                this.closePath();
+                this.fill();
+                this.stroke();
+            };
+        }
+        // 初始化
+        switchPage(0);
+    </script>
+</body>
+</html>
